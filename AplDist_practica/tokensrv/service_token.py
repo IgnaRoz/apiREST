@@ -84,13 +84,13 @@ class Service_token:
             
     def delete_token(self, token_hex:str):
         if token_hex not in self.tokens:
-            raise Exception('TokenNotFound')
+            raise TokenNotFound(token_hex)
         del self.tokens[token_hex]
         self.logger.info(f'Token {token_hex} eliminado')
 
     def get_token(self, token_hex:str):
         if token_hex not in self.tokens:
-            raise Exception('TokenNotFound')
+            raise TokenNotFound(token_hex)
         
         #Llamar al servicio de autenticacion para obtener roles
         username, roles =self.tokens[token_hex].username, ['admin']
