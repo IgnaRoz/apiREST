@@ -2,6 +2,7 @@ import secrets
 import time
 import threading
 import asyncio
+import hashlib
 #!/usr/bin/env python3
 
 
@@ -54,11 +55,8 @@ class Service_token:
     def status_token(self):
         self.logger.info('Servicio de token activo')
         return 'Servicio de token activo'
-    def make_token(self, username:str, pass_hash:str):
+    def make_token(self, username:str):
         
-        #Hacer llamada al servicio de autenticacion para validar usuario y contraseña
-        #Si no es valido lanzar excepcion Forbidden
-        #Si es valido
         token = Token(username)
         self.tokens[token.token_hex] = token
 
@@ -70,7 +68,7 @@ class Service_token:
         print("")
         return token.token_hex, token.time_live
     def Thread_delete_token(self,token):
-        print(f'Se va a eleminar el token {token.token_hex}en {token.time_live} segundos')
+        #print(f'Se va a eleminar el token {token.token_hex}en {token.time_live} segundos')
         time.sleep(token.time_live if token.time_live > 0 else 0) 
         #comprobar si se ha ampliado el tiempo de vida y si no se ha eliminado ya
         if token.time_live < 0.1 :         
@@ -79,12 +77,16 @@ class Service_token:
             
         else:
             #print(f'Token {token.token_hex} no eliminado')
+            #self.logger.info(f'Token {token.token_hex} no eliminado')
             pass
             
             
-    def delete_token(self, token_hex:str):
+    def delete_token(self, token_hex:str, owner:str):
         if token_hex not in self.tokens:
             raise TokenNotFound(token_hex)
+        token = self.tokens[token_hex]
+        if token.username != owner:
+            raise Forbidden(token)
         del self.tokens[token_hex]
         self.logger.info(f'Token {token_hex} eliminado')
 

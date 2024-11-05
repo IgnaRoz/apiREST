@@ -1,5 +1,8 @@
 from flask import Blueprint, request, Response,current_app
 import json
+from service_token import Forbidden, TokenNotFound
+import hashlib
+
 token_api = Blueprint('token_api', __name__)
 
 ROOT_API = '/api/v1'
@@ -17,15 +20,17 @@ def make_token():
     if "username" not in request.json or "pass_hash" not in request.json:
         return Response('JSON data expected', status=400)
     
-    #validar si son validos?
+    
     username = request.json['username']
     password = request.json['pass_hash']
+    
+    servicio_Auth = current_app.config['service_auth']
+    if servicio_Auth.is_authorized(username,password) == False:
+        return Response('Unauthorized', status=401)
 
     servicio_token = current_app.config['service_token']
-    try:
-        token,live_time = servicio_token.make_token(username,password)
-    except Exception as e: #Exception Forbidden 
-        return Response(str(e), status=401)
+    token,live_time = servicio_token.make_token(username)
+    #Make token no lanza la excepcion Forbidden
     if("expiration_cb" not in request.json):
         pass
 
@@ -37,14 +42,14 @@ def make_token():
 def delete_token(token):
 
     if "Owner" not in request.headers.keys():
-        return Response('Owner header expected', status=400)
+        return Response('Ownerheader expected', status=400)
 
     servicio_token = current_app.config['service_token']
     try:
         servicio_token.delete_token(token)
-    except Exception as e: #Exception Forbidden
+    except Forbidden as e: #Exception Forbidden
         return Response(str(e), status=401)
-    except Exception as e: #Ecxeption TokenNotFound
+    except TokenNotFound as e: #Ecxeption TokenNotFound
         return Response(str(e), status=404)
     
     return Response('Token deleted', status=204)

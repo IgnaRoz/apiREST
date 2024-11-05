@@ -1,6 +1,6 @@
 # command_handlers
 import argparse
-
+import json
 #import service_token as Service_token 
 from flask import Flask, request, jsonify
 
@@ -8,6 +8,7 @@ from service_token import  Service_token
 import blueprint
 from service_token import Token
 import logging
+from clientAuth import ClientAuth
 
 def setup_logging(name,file, debug=False):
 
@@ -25,8 +26,18 @@ def setup_logging(name,file, debug=False):
 
     return logger
 
-def run_server(listening, port):
+def read_config(path:str):
+    with open(path) as f:
+        config = json.load(f)
+    return config
+def run_server(listening, port, config_path):
     app = Flask(__name__, instance_relative_config=True)
+
+    config = read_config(config_path)
+    clientAuth = ClientAuth(config["URI"],config["path_base"])
+    if clientAuth.status() == False:
+        print (f'WARNING: No se ha podido conectar con el servicio de autenticación en {config["URI"]}{config["path_base"]}')   
+    app.config["service_auth"] = clientAuth
 
     logger_service = setup_logging("TokenServer_Service", "TokenServer_Service.log", debug=True)
     logger_blueprint = setup_logging("TokenServer_Blueprint", "TokenServer_Blueprint.log", debug=True)
@@ -35,6 +46,7 @@ def run_server(listening, port):
 
     app.register_blueprint(blueprint.token_api)
     app.run(host=listening, port=port, debug=True)
+
 
 if __name__ == '__main__':
  # Crear el parser para los argumentos
@@ -53,6 +65,12 @@ if __name__ == '__main__':
         default="0.0.0.0", 
         help='Establece la dirección de escucha. Valor por defecto: 0.0.0.0'
     )
+    parser.add_argument(
+        '-c', '--config', 
+        type=str, 
+        default="AplDist_practica/tokensrv/config.json", 
+        help='Establece la dirección de escucha. Valor por defecto:'
+    )
 
     # Parsear los argumentos
     args = parser.parse_args()
@@ -62,4 +80,4 @@ if __name__ == '__main__':
 
 
 
-    run_server(args.listening, args.port)
+    run_server(args.listening, args.port, args.config)
