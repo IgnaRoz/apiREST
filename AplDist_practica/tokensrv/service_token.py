@@ -22,7 +22,27 @@ class Token:
     @property
     def token_hex(self):
         return self.__token_hex
+    
+class TokenNotFound(Exception):
+    """Raised if given token does not exists."""
 
+    def __init__(self, token: str) -> None:
+        """Store affected token."""
+        self._tk_ = token
+
+    def __str__(self) -> str:  # pragma: no cover
+        """Error description."""
+        return f'Invalid token: {self._tk_}'
+class Forbidden(Exception):
+    """Raised if the user who isn't owner, try to delete it ."""
+
+    def __init__(self, token: str) -> None:
+        """Store affected token."""
+        self._tk_ = token
+
+    def __str__(self) -> str:  # pragma: no cover
+        """Error description."""
+        return f'Invalid token: {self._tk_}'
 
 class Service_token:
     def __init__(self, logger):
