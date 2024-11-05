@@ -1,0 +1,4 @@
+2024-11-02 18:51:38,066 - TokenServer - INFO - TOKENSRV: Servicio de token iniciado
+2024-11-02 18:51:38,082 - werkzeug - WARNING -  * Debugger is active!
+2024-11-02 18:51:38,097 - werkzeug - INFO -  * Debugger PIN: 121-916-466
+2024-11-02 18:55:36,015 - werkzeug - INFO -  * Detected change in 'D:\\source\\Universidad\\AppDist\\apiREST\\AplDist_practica\\tokensrv\\command_handlers.py', reloading
