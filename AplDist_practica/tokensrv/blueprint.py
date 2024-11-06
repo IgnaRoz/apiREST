@@ -27,14 +27,16 @@ def make_token():
     servicio_Auth = current_app.config['service_auth']
     if servicio_Auth.is_authorized(username,password) == False:
         return Response('Unauthorized', status=401)
-
-    servicio_token = current_app.config['service_token']
-    token,live_time = servicio_token.make_token(username)
-    #Make token no lanza la excepcion Forbidden
     if("expiration_cb" not in request.json):
-        pass
+        expiration_cb = None
+    else:
+        expiration_cb = request.json['expiration_cb']
 
     servicio_token = current_app.config['service_token']
+    token,live_time = servicio_token.make_token(username,expiration_cb)
+    #Make token no lanza la excepcion Forbidden
+
+    
     return Response(json.dumps({"token":token,"live_time":live_time}), status=200)
 
 
