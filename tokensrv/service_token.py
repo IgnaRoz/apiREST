@@ -1,11 +1,11 @@
+#!/usr/bin/env python3
+
+"""Token service module."""
 import secrets
 import time
 import threading
-import asyncio
-import hashlib
+
 import requests
-import threading
-#!/usr/bin/env python3
 
 
 
@@ -32,7 +32,7 @@ class Token:
     @property
     def expiration_cb(self):
         return self.__expiration_cb
-    
+
 class TokenNotFound(Exception):
     """Raised if given token does not exists."""
 
@@ -54,9 +54,10 @@ class Forbidden(Exception):
         """Error description."""
         return f'Invalid token: {self._tk_}'
 
-class Service_token:
+class ServiceToken:
+    """Class representing a service of token."""
     def __init__(self, logger):
-        
+
         self.tokens = {}
         self.logger = logger
         logger.info('Servicio de token iniciado')
@@ -65,38 +66,43 @@ class Service_token:
         self.logger.info('Servicio de token activo')
         return 'Servicio de token activo'
     def make_token(self, username:str, expiration_cb:str):
-        
+
         token = Token(username, expiration_cb)
         self.tokens[token.token_hex] = token
 
-        self.logger.info(f'Token {token.token_hex} creado para {username} con tiempo de vida {token.time_live}')
-
-        #Mas tarde crear un unico hilo que se encargue de borrar los tokens y asegurarme de que no haya problemas de concurrencia
-        timer = threading.Timer(token.time_live, self.Thread_delete_token, args=(token,))
+        self.logger.info(f'Token {token.token_hex} creado para {username} con '
+                 f'tiempo de vida {token.time_live}')
+        #Mas tarde crear un unico hilo que se encargue de borrar los tokens
+        # y asegurarme de que no haya problemas de concurrencia
+        timer = threading.Timer(token.time_live, self.thread_delete_token, args=(token,))
         timer.start()
 
         print("")
         return token.token_hex, token.time_live
-    def Thread_delete_token(self,token):
+    def thread_delete_token(self,token):
         #print(f'Se va a eleminar el token {token.token_hex}en {token.time_live} segundos')
-        #time.sleep(token.time_live if token.time_live > 0 else 0) 
+        #time.sleep(token.time_live if token.time_live > 0 else 0)
         #comprobar si se ha ampliado el tiempo de vida y si no se ha eliminado ya
-        if token.time_live < 0.1 :         
+        if token.time_live < 0.1 :
             if token.expiration_cb:
-                response = requests.put(token.expiration_cb, json={"token": token.token_hex})
+                response = requests.put(token.expiration_cb,
+                                        json={"token": token.token_hex},timeout=5)
                 if response.status_code >= 200 & response.status_code < 300:
-                    self.logger.info(f'Callback del Token {token.token_hex} enviado a la direccion {token.expiration_cb} con codigo de respuesta {response.status_code}')
-                else:                    
-                    self.logger.warning(f'Callback del Token {token.token_hex} ha fallado con codigo {response.status_code}')
+                    self.logger.info(f'Callback del Token {token.token_hex} '
+                                     f'enviado a la direccion {token.expiration_cb} '
+                                     f'con codigo de respuesta {response.status_code}')
+                else:
+                    self.logger.warning(f'Callback del Token {token.token_hex} '
+                                        f'ha fallado con codigo {response.status_code}')
             self.delete_token(token.token_hex, token.username)
             self.logger.info(f'Token {token.token_hex} eliminado')
-            
+
         else:
             #print(f'Token {token.token_hex} no eliminado')
             #self.logger.info(f'Token {token.token_hex} no eliminado')
             pass
-            
-            
+
+
     def delete_token(self, token_hex:str, owner:str):
         if token_hex not in self.tokens:
             raise TokenNotFound(token_hex)
@@ -108,13 +114,9 @@ class Service_token:
     def get_token(self, token_hex:str):
         if token_hex not in self.tokens:
             raise TokenNotFound(token_hex)
-        
+
         #Llamar al servicio de autenticacion para obtener roles
         username, roles =self.tokens[token_hex].username, ['admin']
         self.logger.info(f'Roles {roles} obtenidos para {username}')
         return username, roles
-
-
-
-
-        
+    

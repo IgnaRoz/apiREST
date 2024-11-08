@@ -4,7 +4,7 @@ import json
 #import service_token as Service_token 
 from flask import Flask, request, jsonify
 
-from tokensrv.service_token import  Service_token
+from tokensrv.service_token import  ServiceToken
 import tokensrv.blueprint as blueprint
 from tokensrv.service_token import Token
 import logging
@@ -42,7 +42,7 @@ def run_server(listening, port, auth):
     logger_service = setup_logging("TokenServer_Service", "TokenServer_Service.log", debug=True)
     logger_blueprint = setup_logging("TokenServer_Blueprint", "TokenServer_Blueprint.log", debug=True)
     app.config['logger'] = logger_blueprint
-    app.config['service_token'] = Service_token(logger_service)
+    app.config['service_token'] = ServiceToken(logger_service)
 
     app.register_blueprint(blueprint.token_api)
     app.run(host=listening, port=port, debug=True)
