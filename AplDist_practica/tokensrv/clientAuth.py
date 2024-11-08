@@ -2,12 +2,12 @@ import requests
 import hashlib
 
 class ClientAuth:
-    def __init__(self, URI: str, path_base:str):
+    def __init__(self, URI: str):
         self.URI = URI
-        self.path_base = path_base
+        
 
     def status(self):
-        response =requests.get(f'{self.URI}{self.path_base}/alive')
+        response =requests.get(f'{self.URI}/alive')
         return response.status_code in (200, 201,204)
     
     
@@ -18,5 +18,5 @@ class ClientAuth:
 
         # Calculate the authToken using SHA-256
         auth_token = hashlib.sha256(f'{user}{pass_hash}'.encode()).hexdigest()
-        response = requests.get(f'{self.URI}{self.path_base}/is_authorized/{auth_token}')
+        response = requests.get(f'{self.URI}/is_authorized/{auth_token}')
         return response.status_code in (200, 201,204)

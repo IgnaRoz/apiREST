@@ -30,13 +30,13 @@ def read_config(path:str):
     with open(path) as f:
         config = json.load(f)
     return config
-def run_server(listening, port, config_path):
+def run_server(listening, port, auth):
     app = Flask(__name__, instance_relative_config=True)
 
-    config = read_config(config_path)
-    clientAuth = ClientAuth(config["URI"],config["path_base"])
+    #config = read_config(config_path)
+    clientAuth = ClientAuth(auth)
     if clientAuth.status() == False:
-        print (f'WARNING: No se ha podido conectar con el servicio de autenticación en {config["URI"]}{config["path_base"]}')   
+        print (f'WARNING: No se ha podido conectar con el servicio de autenticación en {auth}')   
     app.config["service_auth"] = clientAuth
 
     logger_service = setup_logging("TokenServer_Service", "TokenServer_Service.log", debug=True)
@@ -66,11 +66,12 @@ if __name__ == '__main__':
         help='Establece la dirección de escucha. Valor por defecto: 0.0.0.0'
     )
     parser.add_argument(
-        '-c', '--config', 
-        type=str, 
-        default="AplDist_practica/tokensrv/config.json", 
-        help='Establece la dirección de escucha. Valor por defecto:'
+        '-a', '--auth',
+        type=str,
+        default="http://127.0.0.1:3001/api/v1",
+        help='Establece la dirección de servicio auth. Valor por defecto: http://127.0.0.1:3001/api/v1'
     )
+
 
     # Parsear los argumentos
     args = parser.parse_args()
@@ -80,4 +81,4 @@ if __name__ == '__main__':
 
 
 
-    run_server(args.listening, args.port, args.config)
+    run_server(args.listening, args.port, args.auth)

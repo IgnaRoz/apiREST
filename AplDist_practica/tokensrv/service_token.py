@@ -4,6 +4,7 @@ import threading
 import asyncio
 import hashlib
 import requests
+import threading
 #!/usr/bin/env python3
 
 
@@ -71,19 +72,20 @@ class Service_token:
         self.logger.info(f'Token {token.token_hex} creado para {username} con tiempo de vida {token.time_live}')
 
         #Mas tarde crear un unico hilo que se encargue de borrar los tokens y asegurarme de que no haya problemas de concurrencia
-        threading.Thread(target=self.Thread_delete_token, args=(token,)).start()
+        timer = threading.Timer(token.time_live, self.Thread_delete_token, args=(token,))
+        timer.start()
 
         print("")
         return token.token_hex, token.time_live
     def Thread_delete_token(self,token):
         #print(f'Se va a eleminar el token {token.token_hex}en {token.time_live} segundos')
-        time.sleep(token.time_live if token.time_live > 0 else 0) 
+        #time.sleep(token.time_live if token.time_live > 0 else 0) 
         #comprobar si se ha ampliado el tiempo de vida y si no se ha eliminado ya
         if token.time_live < 0.1 :         
             if token.expiration_cb:
                 response = requests.put(token.expiration_cb, json={"token": token.token_hex})
                 if response.status_code >= 200 & response.status_code < 300:
-                    self.logger.info(f'Callback del Token {token.token_hex} enviado con codigo de respuesta {response.status_code}')
+                    self.logger.info(f'Callback del Token {token.token_hex} enviado a la direccion {token.expiration_cb} con codigo de respuesta {response.status_code}')
                 else:                    
                     self.logger.warning(f'Callback del Token {token.token_hex} ha fallado con codigo {response.status_code}')
             self.delete_token(token.token_hex, token.username)
