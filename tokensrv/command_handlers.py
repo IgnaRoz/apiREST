@@ -47,9 +47,8 @@ def run_server(listening, port, auth):
     app.register_blueprint(blueprint.token_api)
     app.run(host=listening, port=port, debug=True)
 
-
-if __name__ == '__main__':
- # Crear el parser para los argumentos
+def main():
+    # Crear el parser para los argumentos
     parser = argparse.ArgumentParser(description="Levanta un servidor de tokens")
 
     # Agregar los argumentos de puerto y dirección de escucha
@@ -82,3 +81,6 @@ if __name__ == '__main__':
 
 
     run_server(args.listening, args.port, args.auth)
+
+if __name__ == '__main__':
+    main()
