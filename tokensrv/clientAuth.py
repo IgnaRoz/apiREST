@@ -1,5 +1,9 @@
-import requests
+#!/usr/bin/env python3
+
+"""ClientAuth module."""
+
 import hashlib
+import requests
 
 class ClientAuth:
     def __init__(self, URI: str):
