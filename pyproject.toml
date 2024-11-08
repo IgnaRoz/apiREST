@@ -24,6 +24,7 @@ token_service = "tokensrv.command_handlers:main"
 [project.optional-dependencies]
 tests = ["pytest-cov","requests"]
 linters = ["mypy", "pylint", "ruff","requests"]
+typechecking = ["requests"]
 
 # Tools configuration
 [tool.ruff]
