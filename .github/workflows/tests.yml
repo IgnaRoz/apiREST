@@ -15,4 +15,4 @@ jobs:
                 pip install .[tests]
             - name: Run pytest
               run: |
-                pytest --non-interactive --cov=tokensrv --cov-report=term-missing
+                pytest --cov=tokensrv --cov-report=term-missing
