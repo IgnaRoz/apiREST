@@ -10,7 +10,7 @@ authors = [
 ]
 description = "Token service for ADI"
 requires-python = ">=3.10"
-dependencies = ['flask','requests']
+dependencies = ['flask','types-requests','requests']
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
