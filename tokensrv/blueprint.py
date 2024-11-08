@@ -1,6 +1,6 @@
 from flask import Blueprint, request, Response,current_app
 import json
-from service_token import Forbidden, TokenNotFound
+from tokensrv.service_token import Forbidden, TokenNotFound
 import hashlib
 
 token_api = Blueprint('token_api', __name__)

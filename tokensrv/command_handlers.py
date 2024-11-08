@@ -4,11 +4,11 @@ import json
 #import service_token as Service_token 
 from flask import Flask, request, jsonify
 
-from service_token import  Service_token
-import blueprint
-from service_token import Token
+from tokensrv.service_token import  Service_token
+import tokensrv.blueprint as blueprint
+from tokensrv.service_token import Token
 import logging
-from clientAuth import ClientAuth
+from tokensrv.clientAuth import ClientAuth
 
 def setup_logging(name,file, debug=False):
 
