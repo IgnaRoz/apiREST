@@ -10,7 +10,7 @@ authors = [
 ]
 description = "Token service for ADI"
 requires-python = ">=3.10"
-dependencies = ['flask', 'requests']
+dependencies = ['flask']
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -22,9 +22,8 @@ license = "GPL-3.0-only"
 token_service = "tokensrv.command_handlers:main"
 
 [project.optional-dependencies]
-tests = ["pytest-cov","requests"]
-linters = ["mypy", "pylint", "ruff","requests"]
-typechecking = ["requests"]
+tests = ["pytest-cov"]
+linters = ["mypy", "pylint", "ruff"]
 
 # Tools configuration
 [tool.ruff]
