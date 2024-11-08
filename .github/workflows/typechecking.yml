@@ -11,4 +11,4 @@ jobs:
                 python-version: 3.12
             - uses: jpetrucciani/mypy-check@0.991
               with:
-                requirements: "requests"
+                mypy_flags: "--install-types"
