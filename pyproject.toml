@@ -22,8 +22,8 @@ license = "GPL-3.0-only"
 token_service = "tokensrv.command_handlers:main"
 
 [project.optional-dependencies]
-tests = ["pytest-cov"]
-linters = ["mypy", "pylint", "ruff"]
+tests = ["pytest-cov","requests"]
+linters = ["mypy", "pylint", "ruff","requests"]
 
 # Tools configuration
 [tool.ruff]
