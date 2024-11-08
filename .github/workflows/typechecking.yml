@@ -12,6 +12,6 @@ jobs:
             - name: Install deps
               run: |
                 pip install -U pip
-                pip install .[tests]
+                pip install .[typechecking]
                 python3 -m pip install types-requests
             - uses: jpetrucciani/mypy-check@0.991
