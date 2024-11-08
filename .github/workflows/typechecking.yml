@@ -10,3 +10,5 @@ jobs:
               with:
                 python-version: 3.12
             - uses: jpetrucciani/mypy-check@0.991
+              with:
+                requirements: "requests"
