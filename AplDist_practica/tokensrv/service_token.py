@@ -83,10 +83,10 @@ class Service_token:
             if token.expiration_cb:
                 response = requests.put(token.expiration_cb, json={"token": token.token_hex})
                 if response.status_code >= 200 & response.status_code < 300:
-                    self.logger.info(f'Callback del Token {token.token_hex} enviado con codigo {response.status_code}')
+                    self.logger.info(f'Callback del Token {token.token_hex} enviado con codigo de respuesta {response.status_code}')
                 else:                    
                     self.logger.warning(f'Callback del Token {token.token_hex} ha fallado con codigo {response.status_code}')
-            self.delete_token(token.token_hex)
+            self.delete_token(token.token_hex, token.username)
             self.logger.info(f'Token {token.token_hex} eliminado')
             
         else:
@@ -102,7 +102,6 @@ class Service_token:
         if token.username != owner:
             raise Forbidden(token)
         del self.tokens[token_hex]
-        self.logger.info(f'Token {token_hex} eliminado')
 
     def get_token(self, token_hex:str):
         if token_hex not in self.tokens:
