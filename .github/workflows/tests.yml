@@ -13,6 +13,13 @@ jobs:
               run: |
                 pip install -U pip
                 pip install .[tests]
+            - name: Run mock server
+              uses: actions/checkout@master
+              with:
+                repository: orgname/reponame
+              run: |
+                pip install .
+                auth_service
             - name: Run pytest
               run: |
                 pytest --cov=tokensrv --cov-report=term-missing -v

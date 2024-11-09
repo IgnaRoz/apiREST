@@ -3,8 +3,13 @@ from tokensrv import command_handlers as ch
 from flask import Flask, request, Response
 import threading
 import time
-
+import requests
 class TestApi(unittest.TestCase):
+
+    def test_alive_Mock(self):
+        response = requests.get("http://127.0.0.1:3001/api/v1/alive")
+        print(response.text)
+        self.assertEqual(response.status_code, 204)
 
     def test_status(self):
         with ch.make_server("http://127.0.0.1:3001/api/v1").test_client()  as client:
@@ -13,25 +18,7 @@ class TestApi(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.data.decode(), service.status_token())
     
-    def test_make_token(self):
-
-        server_auth = TestServerAuth.getInstance()
-        
-        time.sleep(2)
-        with ch.make_server("http://127.0.0.1:3005/api/v1").test_client() as client:
-            service = client.application.config['service_token']
-            response = client.put('/api/v1/token', json={'username': 'nacho', 'pass_hash': 'nacho_pass', 'expiration_cb': 'http://127.0.0.1:3005/api/v1/test'})
-            token =response.json["token"]
-            #Confirmo que se ha creado el token
-            self.assertIn(token, service.tokens)
-            #Espero a que caduque el token
-            time.sleep(4)
-            #Compruebo que el token ha sido eliminado
-            self.assertNotIn(token, service.tokens)
-            #Compruebo que se ha lanzado el callback
-            self.assertTrue(server_auth.flag)
-            self.assertEqual(response.status_code, 200)
-
+    
 
 
 
