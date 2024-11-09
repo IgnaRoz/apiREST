@@ -13,17 +13,6 @@ jobs:
               run: |
                 pip install -U pip
                 pip install .[tests]
-            - name: clone mock server
-              uses: actions/checkout@master
-              with:
-                repository: ptobiasdiaz/adi_auth_srv
-                path: adi_auth_srv
-            - name: Run mock server
-              run: |
-                cd adi_auth_srv
-                pip install .
-                auth_service &
-                cd ..
             - name: Run pytest
               run: |
                 pytest --cov=tokensrv --cov-report=term-missing -v
