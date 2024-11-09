@@ -14,20 +14,14 @@ class TestApi(unittest.TestCase):
             self.assertEqual(response.data.decode(), service.status_token())
     
     def test_make_token(self):
-        server_auth = TestServerAuth()
-        def run_server_test():
-            server_auth.setUp().run(host='0.0.0.0', port=3005)
 
-        # Create a new thread and start it
-        server_thread = threading.Thread(target=run_server_test)
-        server_thread.daemon = True  # Set the thread as a daemon thread
-        server_thread.start()
+        server_auth = TestServerAuth.getInstance()
+        
         time.sleep(2)
         with ch.make_server("http://127.0.0.1:3005/api/v1").test_client() as client:
             service = client.application.config['service_token']
             response = client.put('/api/v1/token', json={'username': 'nacho', 'pass_hash': 'nacho_pass', 'expiration_cb': 'http://127.0.0.1:3005/api/v1/test'})
             token =response.json["token"]
-            #print(service.tokens)
             #Confirmo que se ha creado el token
             self.assertIn(token, service.tokens)
             #Espero a que caduque el token
@@ -39,28 +33,47 @@ class TestApi(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
 
 
-class TestServerAuth():
 
-    def setUp(self):
+
+#clase de para lanzar un servidor de auth para los test
+#Implementa un singleton para que solo se lance un servidor de auth para todo(ya que una vez lanzado no se puede parar)
+class TestServerAuth:
+    __test__ = False #Para que pytest lo ignore
+    _instance = None
+
+    @staticmethod
+    def getInstance():
+        if TestServerAuth._instance is None:
+            TestServerAuth._instance = TestServerAuth()
+        return TestServerAuth._instance
+
+    def __init__(self):
+        if TestServerAuth._instance is not None:
+            raise Exception("This class is a singleton!")
+        else:
+            TestServerAuth._instance = self
+            
         self.app = Flask(__name__)
         self.flag = False
         print('Setting up server')
         @self.app.route('/api/v1/test', methods=['PUT',])
         def test_route():
-            self.flag = True
-            #print('Received AUTH')
+            TestServerAuth.getInstance().flag = True
             return Response('Received AUTH', 200)
         @self.app.route('/api/v1/alive', methods=['GET',])
         def alive():
-            print('ESTOY VIVO')
             return Response('Servicio de auth activo', 200)
         #self.app.test_client(host='0.0.0.0', port=3005)
         @self.app.route('/api/v1/is_authorized/<token>', methods=['GET',])
         def is_authorized(token):
-            #print('ES AUTORIZADO')
             return  Response('ES AUTORIZADO', 200) 
         
+        def run_server_test():
+            self.app.run(host='0.0.0.0', port=3005)
 
-        return self.app
+        # Create a new thread and start it
+        server_thread = threading.Thread(target=run_server_test)
+        server_thread.daemon = True  # Set the thread as a daemon thread
+        server_thread.start()
 
   
