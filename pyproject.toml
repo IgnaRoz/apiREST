@@ -43,3 +43,6 @@ ignored-classes = ["Flask"]
 [[tool.mypy.overrides]]
 module = ["flask"]
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+norecursedirs = "adi_auth_srv"
