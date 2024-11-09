@@ -94,7 +94,7 @@ class ServiceToken:
                 else:
                     self.logger.warning(f'Callback del Token {token.token_hex} '
                                         f'ha fallado con codigo {response.status_code}')
-            if token.token_hex in self.tokens:
+            if token.token_hex in self.tokens.keys():
 
                 del self.tokens[token.token_hex]
             self.logger.info(f'Token {token.token_hex} eliminado')
