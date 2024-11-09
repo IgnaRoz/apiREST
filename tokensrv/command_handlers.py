@@ -81,7 +81,7 @@ def main():
 
 
 
-    app = make_server(args.listening, args.port, args.auth)
+    app = make_server(args.auth)
     app.run(host=args.listening, port=args.port, debug=True)
 if __name__ == '__main__':
     main()

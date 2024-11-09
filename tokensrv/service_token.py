@@ -86,7 +86,7 @@ class ServiceToken:
         if token.time_live < 0.1 :
             if token.expiration_cb:
                 response = requests.put(token.expiration_cb,
-                                        json={"token": token.token_hex},timeout=5)
+                                        json={"token": token.token_hex},timeout=2)
                 if response.status_code >= 200 & response.status_code < 300:
                     self.logger.info(f'Callback del Token {token.token_hex} '
                                      f'enviado a la direccion {token.expiration_cb} '
@@ -94,7 +94,9 @@ class ServiceToken:
                 else:
                     self.logger.warning(f'Callback del Token {token.token_hex} '
                                         f'ha fallado con codigo {response.status_code}')
-            self.delete_token(token.token_hex, token.username)
+            if token.token_hex in self.tokens:
+
+                del self.tokens[token.token_hex]
             self.logger.info(f'Token {token.token_hex} eliminado')
 
         else:
