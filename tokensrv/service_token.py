@@ -10,7 +10,7 @@ import requests
 
 
 
-TIME_LIVE = 6
+TIME_LIVE = 3
 
 class Token:
     def __init__(self, username:str, expiration_cb:str):
@@ -111,6 +111,8 @@ class ServiceToken:
             raise Forbidden(token)
         del self.tokens[token_hex]
 
+        
+#FALTA LA LLAMADA A AUTH
     def get_token(self, token_hex:str):
         if token_hex not in self.tokens:
             raise TokenNotFound(token_hex)

@@ -16,7 +16,7 @@ def status():
     return Response(servicio_token.status_token(), status=200)
 
 @token_api.route(f'{ROOT_API}/token', methods=('PUT',))
-def make_token():
+def make_token(): 
     #Registrar ip de origen y enviar 400 despues de x intentos?
     if "username" not in request.json or "pass_hash" not in request.json:
         return Response('JSON data expected', status=400)
@@ -37,8 +37,8 @@ def make_token():
     token,live_time = servicio_token.make_token(username,expiration_cb)
     #Make token no lanza la excepcion Forbidden
 
-    
-    return Response(json.dumps({"token":token,"live_time":live_time}), status=200)
+
+    return Response(json.dumps({"token":token,"live_time":live_time}), status=200, mimetype='application/json')
 
 
 @token_api.route(f'{ROOT_API}/token/<token>', methods=('DELETE',))

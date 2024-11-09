@@ -30,7 +30,7 @@ def read_config(path:str):
     with open(path) as f:
         config = json.load(f)
     return config
-def make_server(listening, port, auth):
+def make_server(auth):
     app = Flask(__name__, instance_relative_config=True)
 
     #config = read_config(config_path)

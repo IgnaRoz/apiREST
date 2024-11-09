@@ -26,8 +26,9 @@ def enviar_token():
 
 
 def print_response(response, *args, **kwargs):
+    
     print(response.status_code)
-    print(response.json())
+    print(response.text)
 
 
 if __name__ == '__main__':
