@@ -55,7 +55,7 @@ class TestApi(unittest.TestCase):
                 # Cerrar la conexión
                 client_socket.close()
 
-            sleep(9)#Espera a que caduquen los tokens
+            #sleep(9)#Espera a que caduquen los tokens
             #Compruebo que el token ha sido eliminado
             print(f'Los tokens son {service.tokens}')
             self.assertNotIn(token, service.tokens.keys())
