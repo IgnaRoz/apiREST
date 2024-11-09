@@ -11,7 +11,11 @@ class ClientAuth:
         
 
     def status(self):
-        response =requests.get(f'{self.URI}/alive')
+        try:
+            response = requests.get(f'{self.URI}/alive', timeout=5)
+        except requests.exceptions.RequestException as e:
+            return False
+        
         return response.status_code in (200, 201,204)
     
     

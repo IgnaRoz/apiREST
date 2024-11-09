@@ -10,8 +10,9 @@ ROOT_API = '/api/v1'
 @token_api.route(f'{ROOT_API}/status', methods=('GET',))
 def status():
     servicio_token = current_app.config['service_token']
-
-    print (servicio_token.status_token())
+    logger = current_app.config['logger']
+    logger.info('Status token')
+    #print (servicio_token.status_token())
     return Response(servicio_token.status_token(), status=200)
 
 @token_api.route(f'{ROOT_API}/token', methods=('PUT',))

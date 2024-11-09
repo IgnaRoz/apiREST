@@ -30,7 +30,7 @@ def read_config(path:str):
     with open(path) as f:
         config = json.load(f)
     return config
-def run_server(listening, port, auth):
+def make_server(listening, port, auth):
     app = Flask(__name__, instance_relative_config=True)
 
     #config = read_config(config_path)
@@ -45,7 +45,8 @@ def run_server(listening, port, auth):
     app.config['service_token'] = ServiceToken(logger_service)
 
     app.register_blueprint(blueprint.token_api)
-    app.run(host=listening, port=port, debug=True)
+    #app.run(host=listening, port=port, debug=True)
+    return app
 
 def main():
     # Crear el parser para los argumentos
@@ -80,7 +81,7 @@ def main():
 
 
 
-    run_server(args.listening, args.port, args.auth)
-
+    app = make_server(args.listening, args.port, args.auth)
+    app.run(host=args.listening, port=args.port, debug=True)
 if __name__ == '__main__':
     main()
