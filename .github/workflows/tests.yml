@@ -22,7 +22,7 @@ jobs:
               run: |
                 cd adi_auth_srv
                 pip install .
-                auth_service
+                auth_service &
                 cd ..
             - name: Run pytest
               run: |
