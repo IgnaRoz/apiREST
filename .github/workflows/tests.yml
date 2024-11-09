@@ -16,7 +16,7 @@ jobs:
             - name: Run mock server
               uses: actions/checkout@master
               with:
-                repository: orgname/reponame
+                repository: ptobiasdiaz/adi_token_srv
               run: |
                 pip install .
                 auth_service
