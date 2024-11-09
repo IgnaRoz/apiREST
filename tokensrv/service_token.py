@@ -84,6 +84,10 @@ class ServiceToken:
         #time.sleep(token.time_live if token.time_live > 0 else 0)
         #comprobar si se ha ampliado el tiempo de vida y si no se ha eliminado ya
         if token.time_live < 0.1 :
+            if token.token_hex in self.tokens.keys():
+
+                del self.tokens[token.token_hex]
+            self.logger.info(f'Token {token.token_hex} eliminado')
             if token.expiration_cb:
                 response = requests.put(token.expiration_cb,
                                         json={"token": token.token_hex},timeout=2)
@@ -94,15 +98,8 @@ class ServiceToken:
                 else:
                     self.logger.warning(f'Callback del Token {token.token_hex} '
                                         f'ha fallado con codigo {response.status_code}')
-            if token.token_hex in self.tokens.keys():
+            
 
-                del self.tokens[token.token_hex]
-            self.logger.info(f'Token {token.token_hex} eliminado')
-
-        else:
-            #print(f'Token {token.token_hex} no eliminado')
-            #self.logger.info(f'Token {token.token_hex} no eliminado')
-            pass
 
 
     def delete_token(self, token_hex:str, owner:str):
