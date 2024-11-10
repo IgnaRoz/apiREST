@@ -72,7 +72,7 @@ def get_token(token):
         roles = servicio_auth.get_roles(username,token)
     except TokenNotFound as e: #Exception TokenNotFound
         return Response(str(e), status=404)
-    
+
     return Response(json.dumps({"username":username,"roles":roles})
                     , mimetype='application/json'
                     , status=200)

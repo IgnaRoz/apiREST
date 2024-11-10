@@ -37,6 +37,6 @@ class ClientAuth:
             response = requests.get(f'{self.uri}/user/{user}',
                                     headers={"AuthToken":token},
                                       timeout=5)
-            return response.json()['roles']	
+            return response.json()['roles']
         except requests.exceptions.RequestException:
             return False

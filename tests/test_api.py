@@ -1,11 +1,11 @@
-from time import sleep
-import unittest
-from tokensrv import command_handlers as ch
-from flask import Flask, request, Response
+"""Tests for the API of the token server."""
+
 import hashlib
-import requests
 import socket
-import json
+#from time import sleep
+import unittest
+import requests
+from tokensrv import command_handlers as ch
 
 ADMIN_USERNAME = 'administrator'
 ADMIN_PASS_HASH = hashlib.sha256('adminpass'.encode()).hexdigest()
@@ -18,24 +18,32 @@ USER_PASS_CODE = hashlib.sha256(f'{USER_USERNAME}{USER_PASS_HASH}'.encode()).hex
 
 
 class TestApi(unittest.TestCase):
-    def test_alive_Mock(self):
-        response = requests.get("http://127.0.0.1:3001/api/v1/alive")
+    """Tests for the API of the token server."""
+
+    def test_alive_mock(self):
+        """Test the alive endpoint."""
+        response = requests.get("http://127.0.0.1:3001/api/v1/alive",timeout=5)
         print(response.text)
         self.assertEqual(response.status_code, 204)
 
     def test_status(self):
+        """Test the status endpoint."""
         with ch.make_server("http://127.0.0.1:3001/api/v1").test_client()  as client:
             service = client.application.config['service_token']
             response = client.get('/api/v1/status')
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.data.decode(), service.status_token())
-    
+
     def test_make_token(self):
+        """Test the make_token endpoint."""
         server =ch.make_server("http://127.0.0.1:3001/api/v1")
         with server.test_client()  as client:
-            
+
             service = client.application.config['service_token']
-            response = client.put('/api/v1/token', json={"username":USER_USERNAME,"pass_hash":USER_PASS_HASH,"expiration_cb":"http://127.0.0.1:3018/api/v1/alive"})
+            response = client.put('/api/v1/token',
+                            json={"username":USER_USERNAME,
+                            "pass_hash":USER_PASS_HASH,
+                            "expiration_cb":"http://127.0.0.1:3018/api/v1/alive"})
             self.assertEqual(response.status_code, 200)
             token =response.json["token"]
             #Confirmo que se ha creado el token
@@ -44,27 +52,28 @@ class TestApi(unittest.TestCase):
                 server_socket.bind(("127.0.0.1", 3018))
                 server_socket.listen()
                 # Aceptar una conexión entrante
-                client_socket, client_address = server_socket.accept()
-                print(f"Conexión desde {client_address}")
+                client_socket,  = server_socket.accept()
+                #print(f"Conexión desde {client_address}")
                 # Recibir datos del cliente
-                data = client_socket.recv(2048)
-                print(f"Recibido: {data.decode()}")
+                #data = client_socket.recv(2048)
+                #print(f"Recibido: {data.decode()}")
                 # Enviar datos al cliente
-                
+
                 client_socket.send(b"HTTP/1.1 200 OK\r\n\r\n")
                 # Cerrar la conexión
                 client_socket.close()
 
             #sleep(9)#Espera a que caduquen los tokens
             #Compruebo que el token ha sido eliminado
-            print(f'Los tokens son {service.tokens}')
             self.assertNotIn(token, service.tokens.keys())
     def test_get_token(self):
+        """Test the get_token endpoint."""
         server =ch.make_server("http://127.0.0.1:3001/api/v1")
         with server.test_client()  as client:
             #crea un token sin expiration_cb
             service = client.application.config['service_token']
-            response = client.put('/api/v1/token', json={"username":USER_USERNAME,"pass_hash":USER_PASS_HASH})
+            response = client.put('/api/v1/token',
+                            json={"username":USER_USERNAME,"pass_hash":USER_PASS_HASH})
             self.assertEqual(response.status_code, 200)
             #Se comprueba que el token se ha creado
             token =response.json["token"]
@@ -75,18 +84,7 @@ class TestApi(unittest.TestCase):
             #Se comprueba que la informacion del token es correcta
             self.assertEqual(response.json["username"], USER_USERNAME)
             #Se comprueba que se obtiene un array de roles
-            print("RESPUESTA")
             print(response.json)
             self.assertIsInstance(response.json["roles"], list)
             #se comprueba que los roles de USER_USERNAME son ["user"]
             self.assertEqual(response.json["roles"], ["user"])
-
-if __name__ == '__main__':
-    ta = TestApi()
-    ta.test_get_token()
-            
-            
-    
-    
-
-
