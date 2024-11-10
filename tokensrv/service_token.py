@@ -10,7 +10,7 @@ import requests
 
 
 
-TIME_LIVE = 3
+TIME_LIVE = 10
 
 class Token:
     """Class representing a token."""
@@ -120,13 +120,12 @@ class ServiceToken:
         del self.tokens[token_hex]
 
 
-#FALTA LA LLAMADA A AUTH
     def get_token(self, token_hex:str):
         """Return the token info."""
         if token_hex not in self.tokens:
             raise TokenNotFound(token_hex)
 
         #Llamar al servicio de autenticacion para obtener roles
-        username, roles =self.tokens[token_hex].username, ['admin']
-        self.logger.info(f'Roles {roles} obtenidos para {username}')
-        return username, roles
+        username = self.tokens[token_hex].username
+        self.logger.info(f'El token {token_hex} pertenece a {username}')
+        return username

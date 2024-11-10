@@ -31,3 +31,12 @@ class ClientAuth:
             return response.status_code in (200, 201,204)
         except requests.exceptions.RequestException:
             return False
+    def get_roles(self, user:str, token:str):
+        """Get the roles of the user."""
+        try:
+            response = requests.get(f'{self.uri}/user/{user}',
+                                    headers={"AuthToken":token},
+                                      timeout=5)
+            return response.json()['roles']	
+        except requests.exceptions.RequestException:
+            return False

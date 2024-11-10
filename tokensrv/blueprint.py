@@ -66,10 +66,13 @@ def delete_token(token):
 def get_token(token):
     """Return the token info."""
     servicio_token = current_app.config['service_token']
+    servicio_auth = current_app.config['service_auth']
     try:
-        username,roles = servicio_token.get_token(token)
+        username = servicio_token.get_token(token)
+        roles = servicio_auth.get_roles(username,token)
     except TokenNotFound as e: #Exception TokenNotFound
         return Response(str(e), status=404)
-
+    
     return Response(json.dumps({"username":username,"roles":roles})
+                    , mimetype='application/json'
                     , status=200)

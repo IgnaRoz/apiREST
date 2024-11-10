@@ -59,8 +59,31 @@ class TestApi(unittest.TestCase):
             #Compruebo que el token ha sido eliminado
             print(f'Los tokens son {service.tokens}')
             self.assertNotIn(token, service.tokens.keys())
+    def test_get_token(self):
+        server =ch.make_server("http://127.0.0.1:3001/api/v1")
+        with server.test_client()  as client:
+            #crea un token sin expiration_cb
+            service = client.application.config['service_token']
+            response = client.put('/api/v1/token', json={"username":USER_USERNAME,"pass_hash":USER_PASS_HASH})
+            self.assertEqual(response.status_code, 200)
+            #Se comprueba que el token se ha creado
+            token =response.json["token"]
+            self.assertIn(token, service.tokens.keys())
+            #Se accede a api/v1/token/<token> para obtener el dueño y los roles
+            response = client.get(f'/api/v1/token/{token}')
+            self.assertEqual(response.status_code, 200)
+            #Se comprueba que la informacion del token es correcta
+            self.assertEqual(response.json["username"], USER_USERNAME)
+            #Se comprueba que se obtiene un array de roles
+            print("RESPUESTA")
+            print(response.json)
+            self.assertIsInstance(response.json["roles"], list)
+            #se comprueba que los roles de USER_USERNAME son ["user"]
+            self.assertEqual(response.json["roles"], ["user"])
 
-            
+if __name__ == '__main__':
+    ta = TestApi()
+    ta.test_get_token()
             
             
     
