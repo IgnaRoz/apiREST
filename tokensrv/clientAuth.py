@@ -6,28 +6,26 @@ import hashlib
 import requests
 
 class ClientAuth:
-    def __init__(self, URI: str):
-        self.URI = URI
-        
+    """ClientAuth class."""
+    def __init__(self, uri: str):
+        self.uri = uri
+
 
     def status(self):
+        """Return the status of the service."""
         try:
-            response = requests.get(f'{self.URI}/alive', timeout=5)
-        except requests.exceptions.RequestException as e:
+            response = requests.get(f'{self.uri}/alive', timeout=5)
+        except requests.exceptions.RequestException:
             return False
-        
+
         return response.status_code in (200, 201,204)
-    
-    
+
     def is_authorized(self, user:str,pass_hash:str):
-        #Calcular el authToken: hash(username + password)
+        """Check if the user is authorized."""
         try:
-
-            auth_string = user + pass_hash
-
-            # Calculate the authToken using SHA-256
+            # Calculate the authToken using SHA-256. auth_string = user + pass_hash
             auth_token = hashlib.sha256(f'{user}{pass_hash}'.encode()).hexdigest()
-            response = requests.get(f'{self.URI}/is_authorized/{auth_token}')
+            response = requests.get(f'{self.uri}/is_authorized/{auth_token}', timeout=5)
             return response.status_code in (200, 201,204)
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             return False
