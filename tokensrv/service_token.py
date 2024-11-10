@@ -13,6 +13,7 @@ import requests
 TIME_LIVE = 3
 
 class Token:
+    """Class representing a token."""
     def __init__(self, username:str, expiration_cb:str):
         self.__token_hex = secrets.token_hex(16)
         self.__time_destroy = time.time() + TIME_LIVE
@@ -22,16 +23,21 @@ class Token:
 
     @property
     def time_live(self):
+        """Return the time to live of the token."""
         return self.__time_destroy - time.time()
     @property
     def token_hex(self):
+        """Return the token hex."""	
         return self.__token_hex
     @property
     def username(self):
+        """Return the username of the token."""
         return self.__username
     @property
     def expiration_cb(self):
+        """Return the expiration callback of the token."""
         return self.__expiration_cb
+
 
 class TokenNotFound(Exception):
     """Raised if given token does not exists."""
@@ -43,6 +49,7 @@ class TokenNotFound(Exception):
     def __str__(self) -> str:  # pragma: no cover
         """Error description."""
         return f'Invalid token: {self._tk_}'
+
 class Forbidden(Exception):
     """Raised if the user who isn't owner, try to delete it ."""
 
@@ -63,9 +70,12 @@ class ServiceToken:
         logger.info('Servicio de token iniciado')
 
     def status_token(self):
+        """Return the status of the token service."""
+
         self.logger.info('Servicio de token activo')
         return 'Servicio de token activo'
     def make_token(self, username:str, expiration_cb:str):
+        """Create a token for a given user."""
 
         token = Token(username, expiration_cb)
         self.tokens[token.token_hex] = token
@@ -80,6 +90,8 @@ class ServiceToken:
         print("")
         return token.token_hex, token.time_live
     def thread_delete_token(self,token):
+        """Thread to delete token"""
+
         #print(f'Se va a eleminar el token {token.token_hex}en {token.time_live} segundos')
         #time.sleep(token.time_live if token.time_live > 0 else 0)
         #comprobar si se ha ampliado el tiempo de vida y si no se ha eliminado ya
@@ -104,6 +116,8 @@ class ServiceToken:
 
 
     def delete_token(self, token_hex:str, owner:str):
+        """Delete a token for a given user."""
+
         if token_hex not in self.tokens:
             raise TokenNotFound(token_hex)
         token = self.tokens[token_hex]
@@ -111,9 +125,11 @@ class ServiceToken:
             raise Forbidden(token)
         del self.tokens[token_hex]
 
-        
+
 #FALTA LA LLAMADA A AUTH
     def get_token(self, token_hex:str):
+        """Get the username of the token."""
+
         if token_hex not in self.tokens:
             raise TokenNotFound(token_hex)
 
