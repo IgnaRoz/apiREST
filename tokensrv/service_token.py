@@ -10,7 +10,7 @@ import requests
 
 
 
-TIME_LIVE = 10
+TIME_LIVE = 5
 
 class Token:
     """Class representing a token."""

@@ -2,7 +2,7 @@
 
 import hashlib
 import socket
-#from time import sleep
+from time import sleep
 import unittest
 import requests
 from tokensrv import command_handlers as ch
@@ -52,14 +52,14 @@ class TestApi(unittest.TestCase):
                 server_socket.bind(("127.0.0.1", 3018))
                 server_socket.listen()
                 # Aceptar una conexión entrante
-                client_socket,  = server_socket.accept()
+                client_socket,_  = server_socket.accept()
                 #print(f"Conexión desde {client_address}")
                 # Recibir datos del cliente
-                #data = client_socket.recv(2048)
+                client_socket.recv(2048)
                 #print(f"Recibido: {data.decode()}")
                 # Enviar datos al cliente
 
-                client_socket.send(b"HTTP/1.1 200 OK\r\n\r\n")
+                client_socket.sendall(b"HTTP/1.1 200 OK\r\n\r\n")
                 # Cerrar la conexión
                 client_socket.close()
 
@@ -88,3 +88,5 @@ class TestApi(unittest.TestCase):
             self.assertIsInstance(response.json["roles"], list)
             #se comprueba que los roles de USER_USERNAME son ["user"]
             self.assertEqual(response.json["roles"], ["user"])
+            #Espera a que caduque el token
+            sleep(6)
