@@ -47,7 +47,6 @@ def make_token():
 @token_api.route(f'{ROOT_API}/token/<token>', methods=('DELETE',))
 def delete_token(token):
     """Delete a token."""
-
     if "Owner" not in request.headers.keys():
         return Response('Ownerheader expected', status=400)
 

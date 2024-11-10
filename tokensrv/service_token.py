@@ -16,6 +16,7 @@ class Token:
     """Class representing a token."""
 
     def __init__(self, username:str, expiration_cb:str):
+        """Create a new token."""
         self.__token_hex = secrets.token_hex(16)
         self.__time_destroy = time.time() + TIME_LIVE
         self.__username = username
@@ -62,6 +63,7 @@ class Forbidden(Exception):
 
 class ServiceToken:
     """Class representing a service of token."""
+
     def __init__(self, logger):
         """Create a new service of token."""
         self.tokens = {}
@@ -70,12 +72,10 @@ class ServiceToken:
 
     def status_token(self):
         """Return the status of the service."""
-
         self.logger.info('Servicio de token activo')
         return 'Servicio de token activo'
     def make_token(self, username:str, expiration_cb:str):
         """Create a new token."""
-
         token = Token(username, expiration_cb)
         self.tokens[token.token_hex] = token
 
@@ -91,7 +91,6 @@ class ServiceToken:
 
     def thread_delete_token(self,token):
         """Delete a token."""
-
         #print(f'Se va a eleminar el token {token.token_hex}en {token.time_live} segundos')
         #time.sleep(token.time_live if token.time_live > 0 else 0)
         #comprobar si se ha ampliado el tiempo de vida y si no se ha eliminado ya
@@ -113,7 +112,6 @@ class ServiceToken:
 
     def delete_token(self, token_hex:str, owner:str):
         """Delete a token."""
-
         if token_hex not in self.tokens:
             raise TokenNotFound(token_hex)
         token = self.tokens[token_hex]

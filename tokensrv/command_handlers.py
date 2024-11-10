@@ -12,7 +12,6 @@ from tokensrv.clientAuth import ClientAuth
 
 def setup_logging(name,file, debug=False):
     """Configura el sistema de log."""
-
     logger = logging.getLogger(name)
     # Configurar el nivel y el formato del log
     logger.setLevel(logging.INFO)
@@ -29,7 +28,6 @@ def setup_logging(name,file, debug=False):
 
 def read_config(path:str):
     """Read the configuration file."""
-
     with open(path, encoding='utf-8') as f:
         config = json.load(f)
     return config
