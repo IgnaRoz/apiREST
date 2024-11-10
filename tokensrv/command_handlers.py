@@ -54,7 +54,7 @@ def make_server(auth):
     return app
 
 def main():
-    """Main function."""
+    """Define the main function."""
     # Crear el parser para los argumentos
     parser = argparse.ArgumentParser(description="Levanta un servidor de tokens")
 
@@ -66,7 +66,7 @@ def main():
         help='Establece el puerto de escucha. Valor por defecto: 3002'
     )
     parser.add_argument(
-        '-l', '--listening', 
+        '-l', '--listening',
         type=str,
         default="0.0.0.0",
         help='Establece la dirección de escucha. Valor por defecto: 0.0.0.0'
@@ -92,4 +92,3 @@ def main():
     app.run(host=args.listening, port=args.port, debug=True)
 if __name__ == '__main__':
     main()
-    

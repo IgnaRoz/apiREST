@@ -15,7 +15,6 @@ class ClientAuth:
 
     def status(self):
         """Return the status of the service."""
-
         try:
             response = requests.get(f'{self.uri}/alive', timeout=5)
         except requests.exceptions.RequestException:
@@ -25,7 +24,6 @@ class ClientAuth:
 
     def is_authorized(self, user:str,pass_hash:str):
         """Check if the user is authorized."""
-
         try:
             # Calculate the authToken using SHA-256. auth_string = user + pass_hash
             auth_token = hashlib.sha256(f'{user}{pass_hash}'.encode()).hexdigest()
