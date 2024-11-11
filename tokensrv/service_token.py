@@ -100,15 +100,20 @@ class ServiceToken:
                 del self.tokens[token.token_hex]
             self.logger.info(f'Token {token.token_hex} eliminado')
             if token.expiration_cb:
-                response = requests.put(token.expiration_cb,
-                                        json={"token": token.token_hex},timeout=2)
-                if response.status_code >= 200 & response.status_code < 300:
-                    self.logger.info(f'Callback del Token {token.token_hex} '
-                                     f'enviado a la direccion {token.expiration_cb} '
-                                     f'con codigo de respuesta {response.status_code}')
-                else:
+                try:
+
+                    response = requests.put(token.expiration_cb,
+                                            json={"token": token.token_hex},timeout=2)
+                    if response.status_code >= 200 & response.status_code < 300:
+                        self.logger.info(f'Callback del Token {token.token_hex} '
+                                        f'enviado a la direccion {token.expiration_cb} '
+                                        f'con codigo de respuesta {response.status_code}')
+                    else:
+                        self.logger.warning(f'Callback del Token {token.token_hex} '
+                                            f'ha fallado con codigo {response.status_code}')
+                except requests.exceptions.RequestException as e:
                     self.logger.warning(f'Callback del Token {token.token_hex} '
-                                        f'ha fallado con codigo {response.status_code}')
+                                        f'ha fallado con error {e}')
 
     def delete_token(self, token_hex:str, owner:str):
         """Delete a token."""
