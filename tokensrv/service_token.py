@@ -74,7 +74,7 @@ class ServiceToken:
         """Return the status of the service."""
         self.logger.info('Servicio de token activo')
         return 'Servicio de token activo'
-    def make_token(self, username:str, expiration_cb:str=None):
+    def make_token(self, username:str, expiration_cb:str=""):
         """Create a new token."""
         token = Token(username, expiration_cb)
         self.tokens[token.token_hex] = token
