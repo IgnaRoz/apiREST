@@ -18,6 +18,7 @@ def setup_logging(name,file, debug=False):
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler = logging.FileHandler(file)
     handler.setFormatter(formatter)
+    logger.handlers.clear()
     logger.addHandler(handler)
     if debug:
         handler_debug = logging.StreamHandler()
