@@ -52,7 +52,7 @@ def delete_token(token):
 
     servicio_token = current_app.config['service_token']
     try:
-        servicio_token.delete_token(token)
+        servicio_token.delete_token(token,request.headers['Owner'])
     except Forbidden as e: #Exception Forbidden
         return Response(str(e), status=401)
     except TokenNotFound as e: #Ecxeption TokenNotFound
@@ -71,6 +71,8 @@ def get_token(token):
         username = servicio_token.get_token(token)
         roles = servicio_auth.get_roles(username,token)
     except TokenNotFound as e: #Exception TokenNotFound
+        logger = current_app.config['logger']
+        logger.warning(f'Token {token} not found')
         return Response(str(e), status=404)
 
     return Response(json.dumps({"username":username,"roles":roles})
