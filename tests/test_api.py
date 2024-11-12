@@ -23,7 +23,7 @@ class TestApi(unittest.TestCase):
 
 
     @pytest.fixture(scope="session", autouse=True)
-    def setup_once():
+    def setup_once(self):
         # Coloca aquí el código que quieres ejecutar al inicio
         print("Ejecutando setup al inicio de los tests")
         with ch.make_server(URI_AUTH).test_client()  as client:
