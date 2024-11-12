@@ -74,6 +74,8 @@ def get_token(token):
         logger = current_app.config['logger']
         logger.warning(f'Token {token} not found')
         return Response(str(e), status=404)
+    except Exception:
+        return Response('Auth service not available', status=503)
 
     return Response(json.dumps({"username":username,"roles":roles})
                     , mimetype='application/json'
