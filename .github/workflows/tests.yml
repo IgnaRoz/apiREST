@@ -16,7 +16,7 @@ jobs:
             - name: clone mock server
               uses: actions/checkout@master
               with:
-                repository: IgnaRoz/adi_auth_srv
+                repository: luideoz/Authentication
                 path: adi_auth_srv
             - name: Run mock server
               run: |
