@@ -21,6 +21,7 @@ jobs:
             - name: Run mock server
               run: |
                 cd adi_auth_srv
+                python bootstrap.py
                 pip install .
                 auth_service &
                 cd ..
