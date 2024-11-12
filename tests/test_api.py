@@ -9,7 +9,7 @@ from tokensrv import command_handlers as ch
 import pytest
 
 ADMIN_USERNAME = 'administrator'
-ADMIN_PASS_HASH = hashlib.sha256('adminpass'.encode()).hexdigest()
+ADMIN_PASS_HASH = hashlib.sha256('admin2024'.encode()).hexdigest()
 ADMIN_AUTH_CODE = hashlib.sha256(f'{ADMIN_USERNAME}{ADMIN_PASS_HASH}'.encode()).hexdigest()
 USER_USERNAME = 'user'
 USER_PASS_HASH = hashlib.sha256('userpass'.encode()).hexdigest()
@@ -21,24 +21,12 @@ URI_AUTH = 'http://127.0.0.1:3000/auth/v1'
 class TestApi(unittest.TestCase):
     """Tests for the API of the token server."""
 
-
-    @pytest.fixture(scope="session", autouse=True)
-    def setup_once(self):
-        # Coloca aquí el código que quieres ejecutar al inicio
-        print("Ejecutando setup al inicio de los tests")
-        with ch.make_server(URI_AUTH).test_client()  as client:
-
-
-            headers = {"Content-Type": "application/json","AuthToken":"token_for_admin"}
-            response = requests.put(URI_AUTH+'/user', json={'username':USER_USERNAME, 'password':USER_PASS_HASH,'role':'user'}, headers=headers)
-            assert response.status_code == 200
-        yield
-
     def test_alive_mock(self):
         """Test the alive endpoint."""
         response = requests.get(URI_AUTH+"/status",timeout=5)
         #print(response.text)
         self.assertEqual(response.status_code, 204)
+        
 
     def test_status(self):
         """Test the status endpoint."""
@@ -48,15 +36,15 @@ class TestApi(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.data.decode(), service.status_token())
 
-    def test_make_token(self):
+    def test_make_token(self,):
         """Test the make_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
 
             service = client.application.config['service_token']
             response = client.put('/api/v1/token',
-                            json={"username":USER_USERNAME,
-                            "pass_hash":USER_PASS_HASH,
+                            json={"username":ADMIN_USERNAME,
+                            "pass_hash":ADMIN_PASS_HASH,
                             "expiration_cb":"http://127.0.0.1:3018/api/v1/alive"})
             self.assertEqual(response.status_code, 200)
             token =response.json["token"]
@@ -84,22 +72,22 @@ class TestApi(unittest.TestCase):
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             response = client.put('/api/v1/token',
-                            json={"name":USER_USERNAME,
-                            "pass":USER_PASS_HASH})
+                            json={"name":ADMIN_USERNAME,
+                            "pass":ADMIN_PASS_HASH})
             self.assertIn(response.status_code, [400,401,402,403, 404])
     def test_make_token_Unauthorized(self):
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             response = client.put('/api/v1/token',
-                            json={"username":USER_USERNAME,
+                            json={"username":ADMIN_USERNAME,
                             "pass_hash":"bad_hash"})
             self.assertIn(response.status_code, [400,401,402,403, 404])
     def test_delete_token(self):
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             service = client.application.config['service_token']
-            token,_ = service.make_token(USER_USERNAME)
-            response = client.delete(f'/api/v1/token/{token}',headers={"Owner":USER_USERNAME})
+            token,_ = service.make_token(ADMIN_USERNAME)
+            response = client.delete(f'/api/v1/token/{token}',headers={"Owner":ADMIN_USERNAME})
             #Compruebo que el token ha sido eliminado
             self.assertNotIn(token, service.tokens.keys())
             #Compruebo el codigo de respuesta
@@ -108,7 +96,7 @@ class TestApi(unittest.TestCase):
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             service = client.application.config['service_token']
-            token,_ = service.make_token(USER_USERNAME)
+            token,_ = service.make_token(ADMIN_USERNAME)
             response = client.delete(f'/api/v1/token/{token}')
             #Compruebo que el token NO ha sido eliminado
             self.assertIn(token, service.tokens.keys())
@@ -118,7 +106,7 @@ class TestApi(unittest.TestCase):
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             service = client.application.config['service_token']
-            token,_ = service.make_token(USER_USERNAME)
+            token,_ = service.make_token(ADMIN_USERNAME)
             response = client.delete(f'/api/v1/token/{token}',headers={"Owner":"NotOwner"})
             #Compruebo que el token NO ha sido eliminado
             self.assertIn(token, service.tokens.keys())
@@ -130,8 +118,8 @@ class TestApi(unittest.TestCase):
 
         with server.test_client()  as client:
             service = client.application.config['service_token']
-            token,_ = service.make_token(USER_USERNAME)
-            response = client.delete(f'/api/v1/token/NotToken',headers={"Owner":USER_USERNAME})
+            token,_ = service.make_token(ADMIN_USERNAME)
+            response = client.delete(f'/api/v1/token/NotToken',headers={"Owner":ADMIN_USERNAME})
             #Compruebo que el token NO ha sido eliminado
             self.assertIn(token, service.tokens.keys())
             #Compruebo el codigo de respuesta
@@ -143,7 +131,7 @@ class TestApi(unittest.TestCase):
             #crea un token sin expiration_cb
             service = client.application.config['service_token']
             response = client.put('/api/v1/token',
-                            json={"username":USER_USERNAME,"pass_hash":USER_PASS_HASH})
+                            json={"username":ADMIN_USERNAME,"pass_hash":ADMIN_PASS_HASH})
             self.assertEqual(response.status_code, 200)
             #Se comprueba que el token se ha creado
             token =response.json["token"]
@@ -152,12 +140,12 @@ class TestApi(unittest.TestCase):
             response = client.get(f'/api/v1/token/{token}')
             self.assertEqual(response.status_code, 200)
             #Se comprueba que la informacion del token es correcta
-            self.assertEqual(response.json["username"], USER_USERNAME)
+            self.assertEqual(response.json["username"], ADMIN_USERNAME)
             #Se comprueba que se obtiene un array de roles
             #print(response.json)
             self.assertIsInstance(response.json["roles"], list)
-            #se comprueba que los roles de USER_USERNAME son ["user"]
-            self.assertEqual(response.json["roles"], ["user"])
+            #se comprueba que los roles de ADMIN_USERNAME son ["user"]
+            self.assertEqual(response.json["roles"], ["admin"])
             #Espera a que caduque el token
             #sleep(6)
     def test_get_token_not_found(self):
@@ -167,7 +155,7 @@ class TestApi(unittest.TestCase):
             #crea un token sin expiration_cb
             service = client.application.config['service_token']
             response = client.put('/api/v1/token',
-                            json={"username":USER_USERNAME,"pass_hash":USER_PASS_HASH})
+                            json={"username":ADMIN_USERNAME,"pass_hash":ADMIN_PASS_HASH})
             self.assertEqual(response.status_code, 200)
             #Se comprueba que el token se ha creado
             token =response.json["token"]
