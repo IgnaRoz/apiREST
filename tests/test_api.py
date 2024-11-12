@@ -26,12 +26,12 @@ class TestApi(unittest.TestCase):
     def setup_once(self):
         # Coloca aquí el código que quieres ejecutar al inicio
         print("Ejecutando setup al inicio de los tests")
-       # with ch.make_server(URI_AUTH).test_client()  as client:
+        with ch.make_server(URI_AUTH).test_client()  as client:
 
 
-           # headers = {"Content-Type": "application/json","AuthToken":"token_for_admin"}
-            #response = client.patch('/user', json={'username':USER_USERNAME, 'password':USER_PASS_HASH,'role':'admin'}, headers=headers)
-            #assert response.status_code == 200
+            headers = {"Content-Type": "application/json","AuthToken":"token_for_admin"}
+            response = requests.patch('/user', json={'username':USER_USERNAME, 'password':USER_PASS_HASH,'role':'user'}, headers=headers)
+            assert response.status_code == 200
 
     def test_alive_mock(self):
         """Test the alive endpoint."""
