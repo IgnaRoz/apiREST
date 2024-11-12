@@ -30,7 +30,7 @@ class TestApi(unittest.TestCase):
 
 
             headers = {"Content-Type": "application/json","AuthToken":"token_for_admin"}
-            response = requests.patch('/user', json={'username':USER_USERNAME, 'password':USER_PASS_HASH,'role':'user'}, headers=headers)
+            response = requests.put(URI_AUTH+'/user', json={'username':USER_USERNAME, 'password':USER_PASS_HASH,'role':'user'}, headers=headers)
             assert response.status_code == 200
 
     def test_alive_mock(self):
