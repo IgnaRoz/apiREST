@@ -122,12 +122,9 @@ class TestApi(unittest.TestCase):
             #Compruebo el codigo de respuesta
             self.assertEqual(response.status_code, 401)
     def test_delete_token_not_found(self):
-<<<<<<< HEAD
+
         server =ch.make_server(URI_AUTH)
-=======
-        """Test the delete_token endpoint."""
-        server =ch.make_server("http://127.0.0.1:3001/api/v1")
->>>>>>> e24ce75 (arreglos pylint)
+
         with server.test_client()  as client:
             service = client.application.config['service_token']
             token,_ = service.make_token(USER_USERNAME)
