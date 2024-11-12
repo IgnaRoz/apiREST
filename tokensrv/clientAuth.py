@@ -16,7 +16,7 @@ class ClientAuth:
     def status(self):
         """Return the status of the service."""
         try:
-            response = requests.get(f'{self.uri}/alive', timeout=5)
+            response = requests.get(f'{self.uri}/status', timeout=5)
         except requests.exceptions.RequestException:
             return False
 
