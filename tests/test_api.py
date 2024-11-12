@@ -143,7 +143,7 @@ class TestApi(unittest.TestCase):
             self.assertEqual(response.json["username"], ADMIN_USERNAME)
             #Se comprueba que se obtiene un array de roles
             #print(response.json)
-            self.assertIsInstance(response.json["roles"], list)
+            #self.assertIsInstance(response.json["roles"], list)
             #se comprueba que los roles de ADMIN_USERNAME son ["user"]
             self.assertEqual(response.json["roles"], ["admin"])
             #Espera a que caduque el token
