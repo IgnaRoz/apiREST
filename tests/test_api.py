@@ -116,7 +116,6 @@ class TestApi(unittest.TestCase):
             self.assertIn(response.status_code, [400,401,402,403, 404])
     def test_delete_token_not_found(self):
         """Test the delete_token endpoint."""
-
         server =ch.make_server(URI_AUTH)
 
         with server.test_client()  as client:
