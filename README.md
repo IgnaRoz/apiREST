@@ -1,4 +1,5 @@
 [![Tests](https://github.com/IgnaRoz/apiREST/actions/workflows/tests.yml/badge.svg)](https://github.com/IgnaRoz/apiREST/actions/workflows/tests.yml)
+[![Tests integracion](https://github.com/IgnaRoz/apiREST/actions/workflows/testsIntegracion.yml/badge.svg)](https://github.com/IgnaRoz/apiREST/actions/workflows/testsIntegracion.yml)
 [![Linters](https://github.com/IgnaRoz/apiREST/actions/workflows/linters.yml/badge.svg)](https://github.com/IgnaRoz/apiREST/actions/workflows/linters.yml)
 [![Type checking](https://github.com/IgnaRoz/apiREST/actions/workflows/typechecking.yml/badge.svg)](https://github.com/IgnaRoz/apiREST/actions/workflows/typechecking.yml)
 
