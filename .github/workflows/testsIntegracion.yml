@@ -25,6 +25,8 @@ jobs:
                 python bootstrap.py
                 auth_service &
                 cd ..
+                pip install .
+                token_service &
             - name: Run pytest
               run: |
                 pytest --cov=tokensrv --cov-report=term-missing -v tests/test_integracion.py
