@@ -6,7 +6,6 @@ from time import sleep
 import unittest
 import requests
 from tokensrv import command_handlers as ch
-import pytest
 
 ADMIN_USERNAME = 'administrator'
 ADMIN_PASS_HASH = hashlib.sha256('admin2024'.encode()).hexdigest()
