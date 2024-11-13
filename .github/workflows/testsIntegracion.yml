@@ -16,14 +16,15 @@ jobs:
             - name: clone mock server
               uses: actions/checkout@master
               with:
-                repository: IgnaRoz/adi_auth_srv
+                repository: luideoz/Authentication
                 path: adi_auth_srv
             - name: Run mock server
               run: |
                 cd adi_auth_srv
                 pip install .
+                python bootstrap.py
                 auth_service &
                 cd ..
             - name: Run pytest
               run: |
-                pytest --cov=tokensrv --cov-report=term-missing -v tests/test_api.py
+                pytest --cov=tokensrv --cov-report=term-missing -v tests/test_integracionpy
