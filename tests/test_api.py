@@ -15,7 +15,7 @@ USER_USERNAME = 'user'
 USER_PASS_HASH = hashlib.sha256('userpass'.encode()).hexdigest()
 USER_PASS_CODE = hashlib.sha256(f'{USER_USERNAME}{USER_PASS_HASH}'.encode()).hexdigest()
 #URI_AUTH = 'http://127.0.0.1:3000/auth/v1'
-URI_AUTH = 'http://127.0.0.1:3001/api/v1'
+URI_AUTH = 'http://127.0.0.1:3000/api/v1'
 
 
 class TestApi(unittest.TestCase):
