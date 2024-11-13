@@ -2,7 +2,6 @@
 
 import hashlib
 import socket
-from time import sleep
 import unittest
 import requests
 from tokensrv import command_handlers as ch
@@ -25,7 +24,6 @@ class TestApi(unittest.TestCase):
         response = requests.get(URI_AUTH+"/status",timeout=5)
         #print(response.text)
         self.assertEqual(response.status_code, 204)
-        
 
     def test_status(self):
         """Test the status endpoint."""
@@ -68,6 +66,7 @@ class TestApi(unittest.TestCase):
             #Compruebo que el token ha sido eliminado
             self.assertNotIn(token, service.tokens.keys())
     def test_make_token_BadRequest(self):
+        """Test the make_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             response = client.put('/api/v1/token',
@@ -75,6 +74,7 @@ class TestApi(unittest.TestCase):
                             "pass":ADMIN_PASS_HASH})
             self.assertIn(response.status_code, [400,401,402,403, 404])
     def test_make_token_Unauthorized(self):
+        """Test the make_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             response = client.put('/api/v1/token',
@@ -82,6 +82,7 @@ class TestApi(unittest.TestCase):
                             "pass_hash":"bad_hash"})
             self.assertIn(response.status_code, [400,401,402,403, 404])
     def test_delete_token(self):
+        """Test the delete_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             service = client.application.config['service_token']
@@ -92,6 +93,7 @@ class TestApi(unittest.TestCase):
             #Compruebo el codigo de respuesta
             self.assertEqual(response.status_code, 204)
     def test_delete_token_not_owner(self):
+        """Test the delete_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             service = client.application.config['service_token']
@@ -102,6 +104,7 @@ class TestApi(unittest.TestCase):
             #Compruebo el codigo de respuesta
             self.assertIn(response.status_code, [400,401,402,403, 404])
     def test_delete_token_Forbidden(self):
+        """Test the delete_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             service = client.application.config['service_token']
@@ -112,13 +115,14 @@ class TestApi(unittest.TestCase):
             #Compruebo el codigo de respuesta
             self.assertIn(response.status_code, [400,401,402,403, 404])
     def test_delete_token_not_found(self):
+        """Test the delete_token endpoint."""
 
         server =ch.make_server(URI_AUTH)
 
         with server.test_client()  as client:
             service = client.application.config['service_token']
             token,_ = service.make_token(ADMIN_USERNAME)
-            response = client.delete(f'/api/v1/token/NotToken',headers={"Owner":ADMIN_USERNAME})
+            response = client.delete('/api/v1/token/NotToken',headers={"Owner":ADMIN_USERNAME})
             #Compruebo que el token NO ha sido eliminado
             self.assertIn(token, service.tokens.keys())
             #Compruebo el codigo de respuesta
@@ -160,5 +164,5 @@ class TestApi(unittest.TestCase):
             token =response.json["token"]
             self.assertIn(token, service.tokens.keys())
             #Se accede a api/v1/token/<token> para obtener el dueño y los roles
-            response = client.get(f'/api/v1/token/NotToken')
+            response = client.get('/api/v1/token/NotToken')
             self.assertIn(response.status_code, [400,401,402,403, 404])
