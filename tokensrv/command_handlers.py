@@ -27,11 +27,6 @@ def setup_logging(name,file, debug=False):
 
     return logger
 
-def read_config(path:str):
-    """Read the configuration file."""
-    with open(path, encoding='utf-8') as f:
-        config = json.load(f)
-    return config
 def make_server(auth):
     """Create the server."""
     app = Flask(__name__, instance_relative_config=True)

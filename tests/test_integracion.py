@@ -24,3 +24,30 @@ class TestIntegracion(unittest.TestCase):
         #comprobar estado del servicio de tokens
         response = requests.get(URI_TOKEN+"/status",timeout=5)
         self.assertIn(response.status_code, [200, 204])
+    def test_make_token(self):
+        """Test the make_token endpoint."""
+        #crear token
+        response = requests.put(URI_TOKEN+"/token",
+                            json={"username":ADMIN_USERNAME,
+                            "pass_hash":ADMIN_PASS_HASH})
+        self.assertEqual(response.status_code, 200)
+        token =response.json()["token"]
+        #comprobar que se ha creado el token
+        response = requests.get(URI_TOKEN+f"/token/{token}")
+        self.assertEqual(response.status_code, 200)
+        #comprobar que el username de la respuesta
+        self.assertEqual(response.json()["username"], ADMIN_USERNAME)
+        #comprobar que dentro del array roles se encuentra el rol admin
+        self.assertIn("admin", response.json()["roles"])
+    
+    def test_delete_token(self):
+        """Test the delete_token endpoint."""
+        #crear token
+        response = requests.put(URI_TOKEN+"/token",
+                            json={"username":ADMIN_USERNAME,
+                            "pass_hash":ADMIN_PASS_HASH})
+        self.assertIn(response.status_code, [200, 204])
+
+
+
+

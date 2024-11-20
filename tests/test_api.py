@@ -33,7 +33,7 @@ class TestApi(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.data.decode(), service.status_token())
 
-    def test_make_token(self,):
+    def test_make_token(self):
         """Test the make_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
