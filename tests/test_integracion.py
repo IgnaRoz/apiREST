@@ -47,6 +47,11 @@ class TestIntegracion(unittest.TestCase):
                             json={"username":ADMIN_USERNAME,
                             "pass_hash":ADMIN_PASS_HASH})
         self.assertIn(response.status_code, [200, 204])
+        token =response.json()["token"]
+        #borrar token
+        response = requests.delete(URI_TOKEN+f"/token/{token}", headers={"Owner":ADMIN_USERNAME})
+        self.assertEqual(response.status_code, 204)
+        
 
 
 

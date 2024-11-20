@@ -70,9 +70,9 @@ def main():
     parser.add_argument(
         '-a', '--auth',
         type=str,
-        default="http://127.0.0.1:3001/api/v1",
+        default="http://127.0.0.1:3000/api/v1",
         help='Establece la dirección de servicio auth. '
-        'Valor por defecto: http://127.0.0.1:3001/api/v1'
+        'Valor por defecto: http://127.0.0.1:3000/api/v1'
     )
 
 
