@@ -1,7 +1,6 @@
 """Módulo principal de la aplicación."""
 # command_handlers
 import argparse
-import json
 import logging
 #import service_token as Service_token
 from flask import Flask
