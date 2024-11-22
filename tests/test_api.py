@@ -47,6 +47,9 @@ class TestApi(unittest.TestCase):
             token =response.json["token"]
             #Confirmo que se ha creado el token
             self.assertIn(token, service.tokens.keys())
+            #Confirmo que el rol es ["admin"]
+            self.assertEqual(service.tokens[token].roles, ["admin"])
+            #Creamos un socket para escuchar el callback
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
                 server_socket.bind(("127.0.0.1", 3018))
                 server_socket.listen()
@@ -65,7 +68,7 @@ class TestApi(unittest.TestCase):
             #sleep(9)#Espera a que caduquen los tokens
             #Compruebo que el token ha sido eliminado
             self.assertNotIn(token, service.tokens.keys())
-    def test_make_token_BadRequest(self):
+    def test_make_token_bad_request(self):
         """Test the make_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
@@ -73,7 +76,7 @@ class TestApi(unittest.TestCase):
                             json={"name":ADMIN_USERNAME,
                             "pass":ADMIN_PASS_HASH})
             self.assertIn(response.status_code, [400,401,402,403, 404])
-    def test_make_token_Unauthorized(self):
+    def test_make_token_unauthorized(self):
         """Test the make_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
@@ -86,7 +89,7 @@ class TestApi(unittest.TestCase):
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             service = client.application.config['service_token']
-            token,_ = service.make_token(ADMIN_USERNAME)
+            token,_ = service.make_token(ADMIN_USERNAME,["admin"])
             response = client.delete(f'/api/v1/token/{token}',headers={"Owner":ADMIN_USERNAME})
             #Compruebo que el token ha sido eliminado
             self.assertNotIn(token, service.tokens.keys())
@@ -97,18 +100,18 @@ class TestApi(unittest.TestCase):
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             service = client.application.config['service_token']
-            token,_ = service.make_token(ADMIN_USERNAME)
+            token,_ = service.make_token(ADMIN_USERNAME,["admin"])
             response = client.delete(f'/api/v1/token/{token}')
             #Compruebo que el token NO ha sido eliminado
             self.assertIn(token, service.tokens.keys())
             #Compruebo el codigo de respuesta
             self.assertIn(response.status_code, [400,401,402,403, 404])
-    def test_delete_token_Forbidden(self):
+    def test_delete_token_forbidden(self):
         """Test the delete_token endpoint."""
         server =ch.make_server(URI_AUTH)
         with server.test_client()  as client:
             service = client.application.config['service_token']
-            token,_ = service.make_token(ADMIN_USERNAME)
+            token,_ = service.make_token(ADMIN_USERNAME,["admin"])
             response = client.delete(f'/api/v1/token/{token}',headers={"Owner":"NotOwner"})
             #Compruebo que el token NO ha sido eliminado
             self.assertIn(token, service.tokens.keys())
@@ -120,7 +123,7 @@ class TestApi(unittest.TestCase):
 
         with server.test_client()  as client:
             service = client.application.config['service_token']
-            token,_ = service.make_token(ADMIN_USERNAME)
+            token,_ = service.make_token(ADMIN_USERNAME,["admin"])
             response = client.delete('/api/v1/token/NotToken',headers={"Owner":ADMIN_USERNAME})
             #Compruebo que el token NO ha sido eliminado
             self.assertIn(token, service.tokens.keys())

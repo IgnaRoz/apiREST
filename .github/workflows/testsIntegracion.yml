@@ -29,4 +29,4 @@ jobs:
                 token_service &
             - name: Run pytest
               run: |
-                pytest --cov=tokensrv --cov-report=term-missing -v tests/test_integracion.py
+                pytest -v tests/test_integracion.py

@@ -1,3 +1,4 @@
+"""Test the integration of the services."""
 import hashlib
 import unittest
 import requests
@@ -13,7 +14,8 @@ URI_AUTH = 'http://127.0.0.1:3000/auth/v1'
 URI_TOKEN = 'http://127.0.0.1:3002/api/v1'
 
 class TestIntegracion(unittest.TestCase):
-    
+    """Tests for the integration of the services."""
+
 
     def test_services_alive(self):
         """Test the status endpoint."""
@@ -29,30 +31,26 @@ class TestIntegracion(unittest.TestCase):
         #crear token
         response = requests.put(URI_TOKEN+"/token",
                             json={"username":ADMIN_USERNAME,
-                            "pass_hash":ADMIN_PASS_HASH})
+                            "pass_hash":ADMIN_PASS_HASH},timeout=5)
         self.assertEqual(response.status_code, 200)
         token =response.json()["token"]
         #comprobar que se ha creado el token
-        response = requests.get(URI_TOKEN+f"/token/{token}")
+        response = requests.get(URI_TOKEN+f"/token/{token}",timeout=5)
         self.assertEqual(response.status_code, 200)
         #comprobar que el username de la respuesta
         self.assertEqual(response.json()["username"], ADMIN_USERNAME)
         #comprobar que dentro del array roles se encuentra el rol admin
         self.assertIn("admin", response.json()["roles"])
-    
+
     def test_delete_token(self):
         """Test the delete_token endpoint."""
         #crear token
         response = requests.put(URI_TOKEN+"/token",
                             json={"username":ADMIN_USERNAME,
-                            "pass_hash":ADMIN_PASS_HASH})
+                            "pass_hash":ADMIN_PASS_HASH},timeout=5)
         self.assertIn(response.status_code, [200, 204])
         token =response.json()["token"]
         #borrar token
-        response = requests.delete(URI_TOKEN+f"/token/{token}", headers={"Owner":ADMIN_USERNAME})
+        response = requests.delete(URI_TOKEN+f"/token/{token}",
+                                   headers={"Owner":ADMIN_USERNAME},timeout=5)
         self.assertEqual(response.status_code, 204)
-        
-
-
-
-

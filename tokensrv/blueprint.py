@@ -28,7 +28,8 @@ def make_token():
     password = request.json['pass_hash']
 
     servicio_auth = current_app.config['service_auth']
-    if not servicio_auth.is_authorized(username,password):
+    roles = servicio_auth.is_authorized(username,password)
+    if not roles:
         return Response('Unauthorized', status=401)
     if "expiration_cb" not in request.json:
         expiration_cb = None
@@ -36,7 +37,7 @@ def make_token():
         expiration_cb = request.json['expiration_cb']
 
     servicio_token = current_app.config['service_token']
-    token,live_time = servicio_token.make_token(username,expiration_cb)
+    token,live_time = servicio_token.make_token(username,roles,expiration_cb)
     #Make token no lanza la excepcion Forbidden
 
 
@@ -66,16 +67,14 @@ def delete_token(token):
 def get_token(token):
     """Return the token info."""
     servicio_token = current_app.config['service_token']
-    servicio_auth = current_app.config['service_auth']
+    #servicio_auth = current_app.config['service_auth']
     try:
-        username = servicio_token.get_token(token)
-        roles = servicio_auth.get_roles(username,token)
+        username, roles = servicio_token.get_token(token)
+        # roles = servicio_auth.get_roles(username,token)
     except TokenNotFound as e: #Exception TokenNotFound
         logger = current_app.config['logger']
         logger.warning(f'Token {token} not found')
         return Response(str(e), status=404)
-    except Exception:
-        return Response('Auth service not available', status=503)
 
     return Response(json.dumps({"username":username,"roles":roles})
                     , mimetype='application/json'

@@ -4,22 +4,24 @@
 import secrets
 import time
 import threading
+from typing import List
 
 import requests
 
 
 
 
-TIME_LIVE = 30
+TIME_LIVE = 5
 
 class Token:
     """Class representing a token."""
 
-    def __init__(self, username:str, expiration_cb:str):
+    def __init__(self, username:str,roles: List[str], expiration_cb:str):
         """Create a new token."""
         self.__token_hex = secrets.token_hex(16)
         self.__time_destroy = time.time() + TIME_LIVE
         self.__username = username
+        self.__roles = roles
         self.__expiration_cb = expiration_cb
         self.task_delete = None #borrar?
 
@@ -35,6 +37,10 @@ class Token:
     def username(self):
         """Return the username."""
         return self.__username
+    @property
+    def roles(self):
+        """Return the roles."""
+        return self.__roles
     @property
     def expiration_cb(self):
         """Return the expiration callback."""
@@ -74,9 +80,9 @@ class ServiceToken:
         """Return the status of the service."""
         self.logger.info('Servicio de token activo')
         return 'Servicio de token activo'
-    def make_token(self, username:str, expiration_cb:str=""):
+    def make_token(self, username:str,roles:List[str], expiration_cb:str=""):
         """Create a new token."""
-        token = Token(username, expiration_cb)
+        token = Token(username,roles, expiration_cb)
         self.tokens[token.token_hex] = token
 
         self.logger.info(f'Token {token.token_hex} creado para {username} con '
@@ -132,5 +138,6 @@ class ServiceToken:
 
         #Llamar al servicio de autenticacion para obtener roles
         username = self.tokens[token_hex].username
-        self.logger.info(f'El token {token_hex} pertenece a {username}')
-        return username
+        roles = self.tokens[token_hex].roles
+        self.logger.info(f'El token {token_hex} pertenece a {username} con roles {roles}')
+        return username, roles
