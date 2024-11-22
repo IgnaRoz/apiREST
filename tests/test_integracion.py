@@ -16,7 +16,6 @@ URI_TOKEN = 'http://127.0.0.1:3002/api/v1'
 class TestIntegracion(unittest.TestCase):
     """Tests for the integration of the services."""
 
-
     def test_services_alive(self):
         """Test the status endpoint."""
         #comprobar estado del servicio de autenticación sea 200 o 204
