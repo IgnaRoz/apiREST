@@ -20,6 +20,7 @@ jobs:
                 path: adi_auth_srv
             - name: Run mock server
               run: |
+                STORAGE_FOLDER = storage
                 cd adi_auth_srv
                 pip install .
                 python bootstrap.py
