@@ -14,10 +14,11 @@ jobs:
                 pip install -U pip
                 pip install .[tests]
             - name: clone mock server
-              uses: actions/checkout@master
+              uses: actions/checkout@v4
               with:
                 repository: luideoz/Authentication
                 path: adi_auth_srv
+                ref: refs/tags/entregable1
             - name: Run mock server
               env:
                 STORAGE_FOLDER : storage
