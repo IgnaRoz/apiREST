@@ -10,8 +10,9 @@ USER_USERNAME = 'user'
 USER_PASS_HASH = hashlib.sha256('userpass'.encode()).hexdigest()
 USER_PASS_CODE = hashlib.sha256(f'{USER_USERNAME}{USER_PASS_HASH}'.encode()).hexdigest()
 URI_AUTH = 'http://127.0.0.1:3000/auth/v1'
-#URI_AUTH = 'http://127.0.0.1:3001/api/v1'
+#URI_AUTH = 'http://192.168.1.100:3000/auth/v1'
 URI_TOKEN = 'http://127.0.0.1:3002/api/v1'
+#URI_TOKEN = 'http://192.168.1.100:3002/api/v1'
 
 class TestIntegracion(unittest.TestCase):
     """Tests for the integration of the services."""

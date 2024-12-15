@@ -38,9 +38,9 @@ def make_server(auth):
     app.config["service_auth"] = client_auth
 
     logger_service = setup_logging("TokenServer_Service",
-                                   "TokenServer_Service.log", debug=True)
+                                   "tokensrv/logs/TokenServer_Service.log", debug=True)
     logger_blueprint = setup_logging("TokenServer_Blueprint",
-                                     "TokenServer_Blueprint.log", debug=True)
+                                     "tokensrv/logs/TokenServer_Blueprint.log", debug=True)
     app.config['logger'] = logger_blueprint
     app.config['service_token'] = ServiceToken(logger_service)
 
