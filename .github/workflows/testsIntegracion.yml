@@ -18,7 +18,7 @@ jobs:
               with:
                 repository: luideoz/Authentication
                 path: adi_auth_srv
-                ref: refs/tags/entregable1
+                ref: refs/tags/entregable
             - name: Run mock server
               env:
                 STORAGE_FOLDER : storage
