@@ -19,8 +19,9 @@ jobs:
                 repository: luideoz/Authentication
                 path: adi_auth_srv
             - name: Run mock server
+              environment:
+                STORAGE_FOLDER : storage
               run: |
-                STORAGE_FOLDER = storage
                 cd adi_auth_srv
                 pip install .
                 python bootstrap.py
