@@ -19,7 +19,7 @@ jobs:
                 repository: luideoz/Authentication
                 path: adi_auth_srv
             - name: Run mock server
-              environment:
+              env:
                 STORAGE_FOLDER : storage
               run: |
                 cd adi_auth_srv
