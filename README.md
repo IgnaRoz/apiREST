@@ -70,3 +70,6 @@ Para desplegar los servicios `tokensrv` y `authsrv` en Kubernetes, sigue estos p
     kubectl port-forward service/tokensrv-service 3002:3002
     kubectl port-forward service/authsrv-service 3001:3001
     ```
+    Puedes probar los servicios con los siguientes enlaces:
+    - `tokensrv`: http://localhost:3002/api/v1/status
+    - `authsrv`: http://localhost:3001/auth/v1/status
