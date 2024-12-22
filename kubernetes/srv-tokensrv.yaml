@@ -33,8 +33,8 @@ spec:
       - name: tokensrv-container
         image: tokensrv
         imagePullPolicy: Never
-        command: ["token_service"]
-        args: ["-a","http://authsrv-service:3001/auth/v1"]
+        command: ["token_service"] # Sustituye el comando por defecto del dokefile del contenedor al iniciar
+        args: ["-a","http://authsrv-service:3001/auth/v1"] # No se usa ip, se usa el nombre del servicio definido mas arriba
         ports:
         - name: port-tokensrv
           containerPort: 3002
