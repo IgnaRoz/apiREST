@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tokensrv-service
+  labels:
+    app: tokensrv
+spec:
+  type: ClusterIP
+  selector:
+    app: tokensrv
+  ports:
+  - protocol: TCP
+    port: 3002
+    targetPort: port-tokensrv
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tokensrv-deployment
+  labels:
+    app: tokensrv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tokensrv
+  template:
+    metadata:
+      labels:
+        app: tokensrv
+    spec:
+      containers:
+      - name: tokensrv-container
+        image: tokensrv
+        imagePullPolicy: Never
+        command: ["token_service"]
+        args: ["-a","http://authsrv-service:3001/auth/v1"]
+        ports:
+        - name: port-tokensrv
+          containerPort: 3002
+

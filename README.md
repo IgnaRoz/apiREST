@@ -36,14 +36,37 @@ If you want to run the tests and/or linters, you need to install the dependencie
 
 All the tests runners and linters are configured in the `pyproject.toml`.
 
-## Continuous integration
+## Kubernetes
 
-This repository is already configured to run the following workflows:
+### Requisitos
 
-- Ruff: checks the format, code style and docs style of the source code.
-- Pylint: same as Ruff, but it evaluates the code. If the code is rated under a given threshold, it fails.
-- MyPy: checks the types definitions and the usages, showing possible errors.
-- Unit tests: uses `pytest` to run unit tests. The code coverage is quite low. Fixing the tests, checking the
-    test coverage and improving it will make a difference.
+- Tener instalado Kubernetes.
+- Tener las imágenes de los servicios `tokensrv` y `authsrv` construidas usando el script `build`.
+- El servicio authsrv se puede obtener del repositorio: https://github.com/luisbl03/Authentication.git (probado con el tag "entregable2")
 
-If you create your repository from this template, you will get all those CI for free.
+Para desplegar los servicios `tokensrv` y `authsrv` en Kubernetes, sigue estos pasos:
+
+1. **Aplicar los archivos YAML** para `tokensrv` y `authsrv` que se encuentran en la carpeta `kubernetes`.
+
+    ```sh
+    kubectl apply -f /d:/source/Universidad/AppDist/apiREST/kubernetes/srv-tokensrv.yaml
+    kubectl apply -f /d:/source/Universidad/AppDist/apiREST/kubernetes/srv-authsrv.yaml
+    ```
+
+2. **Verificar los despliegues y servicios**:
+    ```sh
+    kubectl get deployments
+    kubectl get services
+    ```
+
+3. **Ver logs de los servicios**:
+    ```sh
+    kubectl logs --follow deployment/tokensrv-deployment
+    kubectl logs --follow deployment/authsrv-deployment
+    ```
+
+4. **Configurar port-forwarding** para acceder a los servicios localmente:
+    ```sh
+    kubectl port-forward service/tokensrv-service 3002:3002
+    kubectl port-forward service/authsrv-service 3001:3001
+    ```
