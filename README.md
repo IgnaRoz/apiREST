@@ -49,8 +49,8 @@ Para desplegar los servicios `tokensrv` y `authsrv` en Kubernetes, sigue estos p
 1. **Aplicar los archivos YAML** para `tokensrv` y `authsrv` que se encuentran en la carpeta `kubernetes`.
 
     ```sh
-    kubectl apply -f /d:/source/Universidad/AppDist/apiREST/kubernetes/srv-tokensrv.yaml
-    kubectl apply -f /d:/source/Universidad/AppDist/apiREST/kubernetes/srv-authsrv.yaml
+    kubectl apply -f .\\kubernetes\\srv-tokensrv.yaml
+    kubectl apply -f .\\kubernetes\\srv-authsrv.yaml
     ```
 
 2. **Verificar los despliegues y servicios**:
