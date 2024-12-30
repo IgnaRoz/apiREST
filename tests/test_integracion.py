@@ -4,7 +4,7 @@ import unittest
 import requests
 
 ADMIN_USERNAME = 'administrator'
-ADMIN_PASS_HASH = hashlib.sha256('admin2024'.encode()).hexdigest()
+ADMIN_PASS_HASH = hashlib.sha256('admin'.encode()).hexdigest()
 ADMIN_AUTH_CODE = hashlib.sha256(f'{ADMIN_USERNAME}{ADMIN_PASS_HASH}'.encode()).hexdigest()
 USER_USERNAME = 'user'
 USER_PASS_HASH = hashlib.sha256('userpass'.encode()).hexdigest()
